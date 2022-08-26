@@ -1,7 +1,8 @@
 /* eslint-disable global-require */
-'use strict';
+"use strict";
 
-let currentEnvironment = 'prod';
+const ENVIRONMENTS = { prod: "prod", eval: "eval" };
+let currentEnvironment = ENVIRONMENTS.prod;
 
 /**
  * @type {EnvConfig}
@@ -19,10 +20,13 @@ const getEnvConfig = () => currentConfig;
  * @param {string} [env]
  * @return {EnvConfig}
  */
-const setEnvConfig = env => {
+const setEnvConfig = (env) => {
   if (env) {
     currentEnvironment = env;
-    return Object.assign(currentConfig, require(`./${env}`));
+    if (env === ENVIRONMENTS.eval)
+      return Object.assign(currentConfig, require("./eval"));
+    if (env === ENVIRONMENTS.prod)
+      return Object.assign(currentConfig, require("./prod"));
   }
 
   return Object.assign(currentConfig, require(`./${currentEnvironment}`));
